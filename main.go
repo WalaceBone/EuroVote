@@ -1,75 +1,45 @@
 package main
 
 import (
+	"encoding/xml"
 	"fmt"
-	"log"
-	"os"
-	"path/filepath"
-	"time"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-type PoliticalGroup struct {
-	gorm.Model
-	GroupID    uint   `gorm:"primary_key"`
-	Identifier string `gorm:"type:varchar(100)"`
-	Members    []Member
-}
+// XMLDataServiceImpl is an implementation of the DataService interface.
+type XMLDataServiceImpl struct{}
 
-type Member struct {
-	gorm.Model
-	MemberID  uint   `gorm:"primary_key"`
-	MepID     string `gorm:"type:varchar(100)"`
-	PersID    string `gorm:"type:varchar(100)"`
-	GroupID   uint
-	RollCalls []RollCallVote
-}
-
-type RollCallVote struct {
-	gorm.Model
-	VoteID     uint      `gorm:"primary_key"`
-	Identifier string    `gorm:"type:varchar(100)"`
-	DlvID      string    `gorm:"type:varchar(100)"`
-	Date       time.Time `gorm:"type:timestamp"`
-	MemberID   uint
-	VoteResult string `gorm:"type:varchar(100)"`
-}
-
-type DB struct {
-	*gorm.DB
-}
-
-var db *DB
-
-func start() {
-	var err error
-	dsn := "host=127.0.0.1 user=postgres password=mysecretpassword dbname=postgres port=5432"
-	dbConn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(fmt.Sprintf("failed to connect database: %v", err))
+func (s *XMLDataServiceImpl) IngestData(rawXMLData string) error {
+	// Parse the raw XML data
+	var voteResults RollCallVoteResults
+	if err := xml.Unmarshal([]byte(rawXMLData), &voteResults); err != nil {
+		return err
 	}
-	db = &DB{dbConn}
+
+	// Process the parsed data (you can add your logic here)
+	fmt.Println("Processed XML data:", voteResults)
+
+	// Your additional processing logic goes here
+
+	return nil
+}
+
+// RollCallVoteResults represents the structure of your XML data.
+type RollCallVoteResults struct {
+	Titles []struct {
+		Text []struct {
+			Language string `xml:"Language,attr"`
+			Value    string `xml:",chardata"`
+		} `xml:"RollCallVoteResults.Title.Text"`
+	} `xml:"RollCallVoteResults.Titles"`
+	// Add other fields as needed based on your XML structure
 }
 
 func main() {
-
-	start()
-	// Get the absolute path to the XML file
-	xmlPath := filepath.Join(".", "public", "xml", "vote.xml")
-	absPath, err := filepath.Abs(xmlPath)
+	// Example usage
+	service := &XMLDataServiceImpl{}
+	rawXMLData := "<RollCallVoteResults>...</RollCallVoteResults>"
+	err := service.IngestData(rawXMLData)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error:", err)
 	}
-
-	// Read the contents of the file into a byte slice
-	xmlData, err := os.ReadFile(absPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Create an instance of the top-level struct
-	print(xmlData)
-	// Do something with the result...
 }
