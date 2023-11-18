@@ -36,10 +36,12 @@ type RollCallVoteResults struct {
 
 func main() {
 	// Example usage
-	service := &XMLDataServiceImpl{}
-	rawXMLData := "<RollCallVoteResults>...</RollCallVoteResults>"
-	err := service.IngestData(rawXMLData)
+
+	app, err := initApp()
+
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
+	app.Run()
+	defer app.Stop()
 }
