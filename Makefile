@@ -24,7 +24,7 @@ help:
 
 
 
-all: build run
+all: air
 
 build:
 	$(GOBUILD) -o $(BINARY_NAME) -v

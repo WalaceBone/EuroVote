@@ -1,4 +1,3 @@
-
 <RollCallVoteResults.Titles>
     <RollCallVoteResults.Title.Text Language="BG"> ПРОТОКОЛ <text:line-break /> Резултат от поименни
         гласувания - Приложение 2 </RollCallVoteResults.Title.Text>
@@ -80,7 +79,7 @@
         </Result.PoliticalGroup.List>
         <Result.PoliticalGroup.List Identifier="Verts/ALE">
             <PoliticalGroup.Member.Name MepId="7263" PersId="204335">Alametsä</PoliticalGroup.Member.Name>
-     
+
         </Result.PoliticalGroup.List>
     </Result.For>
     <Result.Against Number="12">
@@ -117,7 +116,7 @@
         </Result.PoliticalGroup.List>
         <Result.PoliticalGroup.List Identifier="The Left">
             <PoliticalGroup.Member.Name MepId="7089" PersId="197701">Arvanitis</PoliticalGroup.Member.Name>
-            
+
         </Result.PoliticalGroup.List>
     </Result.Abstention>
     <Intentions Code="100">

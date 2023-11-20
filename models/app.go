@@ -1,6 +1,8 @@
 package models
 
 import (
+	"io"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -34,26 +36,51 @@ func (a *App) SetupRoutes() {
 		c.JSON(200, vote)
 	})
 
-	// Route receiving a XML file to send to a XMLService
-	// that will parse it and persist it to the database
+	// Route to handle the dump request that will respond with the data from the database
+	a.Router.GET("/dump", func(c *gin.Context) {
+
+		// Dump the data from the database
+		// Send the data back to the client
+	})
+
 	a.Router.POST("/xml", func(c *gin.Context) {
 		// Get the file from the request
 		file, err := c.FormFile("file")
 		if err != nil {
+			log.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		// Save the file locally
-		if err := c.SaveUploadedFile(file, file.Filename); err != nil {
+		openFile, err := file.Open()
+		if err != nil {
+			log.Println(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		defer openFile.Close()
+
+		fc, err := io.ReadAll(openFile)
+		if err != nil {
+			log.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
+		// fmt.Println("xml :", string(fc))
+
+		// fmt.Print("HELLO\n")
 		//Basic success response
-		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 		// Send the file to the XMLService
-		// xmlService := &XMLDataServiceImpl{}
+		xmlService := &XMLDataService{}
+		err = xmlService.IngestData(fc)
+		if err != nil {
+			log.Println(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
+
 	})
 
 }
