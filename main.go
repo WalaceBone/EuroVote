@@ -3,14 +3,17 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+
+	"github.com/WalaceBone/EuroVote/models"
 )
 
 // XMLDataServiceImpl is an implementation of the DataService interface.
-type XMLDataServiceImpl struct{}
+type XMLDataServiceImpl struct {
+}
 
 func (s *XMLDataServiceImpl) IngestData(rawXMLData string) error {
 	// Parse the raw XML data
-	var voteResults RollCallVoteResults
+	var voteResults models.RollCallVoteResults
 	if err := xml.Unmarshal([]byte(rawXMLData), &voteResults); err != nil {
 		return err
 	}
@@ -23,17 +26,6 @@ func (s *XMLDataServiceImpl) IngestData(rawXMLData string) error {
 	return nil
 }
 
-// RollCallVoteResults represents the structure of your XML data.
-type RollCallVoteResults struct {
-	Titles []struct {
-		Text []struct {
-			Language string `xml:"Language,attr"`
-			Value    string `xml:",chardata"`
-		} `xml:"RollCallVoteResults.Title.Text"`
-	} `xml:"RollCallVoteResults.Titles"`
-	// Add other fields as needed based on your XML structure
-}
-
 func main() {
 	// Example usage
 
@@ -42,6 +34,10 @@ func main() {
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
+
+	app.Router.StaticFile("/", "./public/index.html")
+
 	app.Run()
 	defer app.Stop()
+
 }

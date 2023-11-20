@@ -1,10 +1,8 @@
-package model
+package models
 
 import (
-	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
@@ -16,23 +14,6 @@ type VoteResult struct {
 	DlvID      string
 	Date       string
 	// ... other fields
-}
-
-type App struct {
-	DB     *gorm.DB
-	Client *http.Client
-	Router *gin.Engine
-	// Add other fields as needed
-}
-
-// Run starts the application.
-func (a *App) Run() {
-	a.Router.Run()
-}
-
-// Stop stops the application.
-func (a *App) Stop() {
-	a.DB.Close()
 }
 
 type PoliticalGroup struct {

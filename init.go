@@ -21,12 +21,6 @@ func initDB() (*gorm.DB, error) {
 func initRouter() *gin.Engine {
 	r := gin.Default()
 	// Add your routes here
-
-	r.GET("/hello", func(c *gin.Context) {
-
-		c.JSON(200, "Hello World!")
-	})
-
 	return r
 }
 
@@ -38,11 +32,8 @@ func initApp() (*model.App, error) {
 
 	app := &model.App{DB: db}
 
-	app.DB, err = initDB()
-	if err != nil {
-		return nil, err
-	}
-
 	app.Router = initRouter()
+	app.SetupRoutes()
+
 	return app, nil
 }
