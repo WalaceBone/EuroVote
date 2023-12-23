@@ -1,0 +1,2360 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "version": "v1",
+        "title": "European Parliament Open Data API",
+        "description": "API giving access to data published on the Open Data Portal of the European Parliament (EP).",
+        "license": {
+            "name": "European Parliament Legal Notice",
+            "url": "https://www.europarl.europa.eu/legal-notice"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://data.europarl.europa.eu/api/v1",
+            "description": "EP Open Data API"
+        }
+    ],
+    "tags": [
+        {
+            "name": "MEPS",
+            "description": "Returns data about the Members of the European Parliament (MEPs)"
+        },
+        {
+            "name": "EP BODIES",
+            "description": "Returns data about EP Corporate Bodies"
+        },
+        {
+            "name": "EP DOCUMENTS",
+            "description": "Returns data about EP Documents"
+        },
+        {
+            "name": "EP EVENTS",
+            "description": "Returns data about EP Events"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "MEPS": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "id",
+                                "type"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                },
+                                "sortLabel": {
+                                    "type": "string"
+                                },
+                                "identifier": {
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "givenName": {
+                                    "type": "string"
+                                },
+                                "familyName": {
+                                    "type": "string"
+                                },
+                                "officialGivenName": {
+                                    "type": "string"
+                                },
+                                "officialFamilyName": {
+                                    "type": "string"
+                                },
+                                "api:country-of-representation": {
+                                    "type": "string"
+                                },
+                                "api:political-group": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "EP-BODIES": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "id",
+                                "type"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                },
+                                "identifier": {
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "linkedTo": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "EP-DOCUMENTS": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "id",
+                                "type"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                },
+                                "identifier": {
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "work_type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "EP-EVENTS": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "id",
+                                "type"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                },
+                                "activity_id": {
+                                    "type": "string"
+                                },
+                                "activity_label": {
+                                    "type": "string"
+                                },
+                                "had_activity_type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "language": {
+                "name": "language",
+                "in": "query",
+                "description": "Language of the resource. Values are ISO 639-1 language codes identifying the 24 official languages of the EU + 'mul' that refers to resources in multiple languages. If no language parameter is selected, the service will return results in all the available languages.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "bg",
+                        "es",
+                        "cs",
+                        "da",
+                        "de",
+                        "et",
+                        "el",
+                        "en",
+                        "fr",
+                        "ga",
+                        "hr",
+                        "it",
+                        "lv",
+                        "lt",
+                        "hu",
+                        "mt",
+                        "nl",
+                        "pl",
+                        "pt",
+                        "ro",
+                        "sk",
+                        "sl",
+                        "fi",
+                        "sv",
+                        "mul"
+                    ]
+                }
+            },
+            "format": {
+                "name": "format",
+                "in": "query",
+                "description": "Response format",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "default": "application/rdf+xml",
+                    "enum": [
+                        "application/rdf+xml",
+                        "text/turtle"
+                    ]
+                }
+            },
+            "format-all": {
+                "name": "format",
+                "in": "query",
+                "description": "Response format",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "default": "application/ld+json",
+                    "enum": [
+                        "application/ld+json",
+                        "application/rdf+xml",
+                        "text/turtle"
+                    ]
+                }
+            },
+            "format-feeds": {
+                "name": "format",
+                "in": "query",
+                "description": "Response format for feeds",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "default": "application/atom+xml",
+                    "enum": [
+                        "application/atom+xml"
+                    ]
+                }
+            },
+            "gender": {
+                "name": "gender",
+                "in": "query",
+                "description": "Gender of the person. The non-exhaustive list of values includes concepts of the Human sex authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/human-sex .",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "FEMALE",
+                            "MALE",
+                            "NAP",
+                            "NKN",
+                            "NST"
+                        ]
+                    }
+                }
+            },
+            "country-of-representation": {
+                "name": "country-of-representation",
+                "in": "query",
+                "description": "27 EU Member States and UK. Values are ISO 3166-1 alpha-2 country codes.",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "BE",
+                            "BG",
+                            "CZ",
+                            "DK",
+                            "DE",
+                            "EE",
+                            "IE",
+                            "EL",
+                            "ES",
+                            "FR",
+                            "HR",
+                            "IT",
+                            "CY",
+                            "LV",
+                            "LT",
+                            "LU",
+                            "HU",
+                            "MT",
+                            "NL",
+                            "AT",
+                            "PL",
+                            "PT",
+                            "RO",
+                            "SI",
+                            "SK",
+                            "FI",
+                            "SE",
+                            "UK"
+                        ]
+                    }
+                }
+            },
+            "political-group": {
+                "name": "political-group",
+                "in": "query",
+                "description": "EP political groups. The non-exhaustive list of values includes  concepts of the Corporate body authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/corporate-body . Concepts referring to EP political groups will have 'EP_GROUP' as a Corporate body classification ",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "CD",
+                            "C",
+                            "CDI",
+                            "COM",
+                            "DE",
+                            "DEP",
+                            "CTDI",
+                            "ADLE",
+                            "ALDE",
+                            "DR",
+                            "ARC",
+                            "ARE",
+                            "EDD",
+                            "EDN",
+                            "ED",
+                            "ECR",
+                            "GUE/NGL",
+                            "ENF",
+                            "S&D",
+                            "TDI",
+                            "UPE",
+                            "UEN",
+                            "ITS",
+                            "LDR",
+                            "IND/DEM",
+                            "L",
+                            "NI",
+                            "PSE",
+                            "RDE",
+                            "The Left",
+                            "EFD",
+                            "EFDD",
+                            "EPP",
+                            "PPE",
+                            "EPP-ED",
+                            "PPE-DE",
+                            "ELDR",
+                            "CG",
+                            "FE",
+                            "V",
+                            "Greens/EFA",
+                            "Verts/ALE",
+                            "GUE",
+                            "I-EDN",
+                            "ID"
+                        ]
+                    }
+                }
+            },
+            "body-classification": {
+                "name": "body-classification",
+                "in": "query",
+                "description": "EP Corporate Body classification. The non-exhaustive list of values includes  concepts of the Corporate bodies classification authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/corporate-body-classification.",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "EP_POLBODY",
+                            "EP_GROUP",
+                            "EP_CMT",
+                            "EP_CO",
+                            "EP_SC",
+                            "EP_CT",
+                            "EP_CE",
+                            "EP_CJ",
+                            "EP_DEL",
+                            "EP_DE",
+                            "EP_DM",
+                            "EP_IG",
+                            "EP_AP",
+                            "EP_WG",
+                            "EU_INST"
+                        ]
+                    }
+                }
+            },
+            "committee": {
+                "name": "committee",
+                "in": "query",
+                "description": "EP Committees. The non-exhaustive list of values includes concepts of the Corporate body authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/corporate-body . Concepts referring to EP Committees will have 'EP_CMT' as a Corporate body classification",
+                "required": true,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "EP_AFCO",
+                            "EP_AFET",
+                            "EP_AGRI",
+                            "EP_AIDA",
+                            "EP_ANIT",
+                            "EP_ASSOC",
+                            "EP_BECA",
+                            "EP_TC_BSE",
+                            "EP_BUDE",
+                            "EP_BUDG",
+                            "EP_TC_CLIM",
+                            "EP_CODE",
+                            "EP_CONT",
+                            "EP_CRIM",
+                            "EP_CRIS",
+                            "EP_CTS",
+                            "EP_CULT",
+                            "EP_DELCON",
+                            "EP_DEVE",
+                            "EP_DROI",
+                            "EP_TC_ECHE",
+                            "EP_ECON",
+                            "EP_EMIS",
+                            "EP_EMPL",
+                            "EP_ENVI",
+                            "EP_EQUI",
+                            "EP_FEMM",
+                            "EP_TC_FIAP",
+                            "EP_TC_FINP",
+                            "EP_FISC",
+                            "EP_TC_GENE",
+                            "EP_IMCO",
+                            "EP_IMMU",
+                            "EP_INGE",
+                            "EP_INTA",
+                            "EP_ITRE",
+                            "EP_JURI",
+                            "EP_LIBE",
+                            "EP_TC_MARE",
+                            "EP_PANA",
+                            "EP_PECH",
+                            "EP_PEST",
+                            "EP_PETI",
+                            "EP_POLI",
+                            "EP_REGI",
+                            "EP_RELA",
+                            "EP_SEDE",
+                            "EP_SURE",
+                            "EP_TAX2",
+                            "EP_TAX3",
+                            "EP_TAXE",
+                            "EP_TC_TDIP",
+                            "EP_TEMP",
+                            "EP_TERR",
+                            "EP_TRAN",
+                            "EP_TC_CTS"
+                        ],
+                        "default": [
+                            "EP_AFCO"
+                        ]
+                    }
+                }
+            },
+            "work-type-committe": {
+                "name": "work-type",
+                "in": "query",
+                "description": "A type of a Work. Values are concepts of the Resource type authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/resource-type .",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "OPIN_DRAFT_EP_CMT",
+                            "OPIN_EP_CMT",
+                            "OPIN_LETTER_EP_CMT",
+                            "REPORT_DRAFT_EP_CMTP"
+                        ]
+                    }
+                }
+            },
+            "work-type": {
+                "name": "work-type",
+                "in": "query",
+                "description": "A type of a Work. Values are concepts of the Resource type authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/resource-type .",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "PLENARY_AGENDA_PART_SESSION_EP",
+                            "PLENARY_AGENDA_EP",
+                            "PLENARY_CRE_EP",
+                            "PLENARY_MINUTES_EP",
+                            "PLENARY_ATT_LIST_EP",
+                            "PLENARY_VOTES_RESULTS_EP",
+                            "PLENARY_RCV_EP"
+                        ]
+                    }
+                }
+            },
+            "work-type-all": {
+                "name": "work-type",
+                "in": "query",
+                "description": "A type of a Work. Values are concepts of the Resource type authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/resource-type .",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "AMEND_LIST_EP",
+                            "QUEST_ORAL_PART_SESSION_EP",
+                            "MOTION_RES",
+                            "REPORT_EP",
+                            "JOINT_MOTION_RES",
+                            "PLENARY_ATT_LIST_EP",
+                            "PLENARY_CRE_EP",
+                            "PLENARY_MINUTES_EP",
+                            "PLENARY_RCV_EP",
+                            "PLENARY_VOTES_RESULTS_EP",
+                            "PLENARY_AGENDA_PART_SESSION_EP",
+                            "PLENARY_AGENDA_EP",
+                            "ERRATUM",
+                            "ADOPT_TEXT",
+                            "QUEST_WRITTEN_ANSWER_EP",
+                            "QUEST_WRITTEN_PRIORITY_EP",
+                            "QUEST_WRITTEN",
+                            "QUEST_ORAL",
+                            "ANNEX",
+                            "CORRIGENDUM",
+                            "INTERPEL_MAJ_EP",
+                            "INTERPEL_MINOR_ANSWER_EP",
+                            "INTERPEL_MIN_EP"
+                        ]
+                    }
+                }
+            },
+            "parliamentary-term": {
+                "name": "parliamentary-term",
+                "in": "query",
+                "description": "Parliamentary Term from 0 to the current.",
+                "required": true,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9
+                        ],
+                        "default": 9
+                    }
+                }
+            },
+            "parliamentary-term-optional": {
+                "name": "parliamentary-term",
+                "in": "query",
+                "description": "Parliamentary Term from 0 to the current.",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9
+                        ],
+                        "default": 9
+                    }
+                }
+            },
+            "mep-id": {
+                "name": "mep-id",
+                "in": "path",
+                "description": "MEP identifier.",
+                "required": true,
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "default": 124936
+                    }
+                }
+            },
+            "body-id": {
+                "name": "body-id",
+                "in": "path",
+                "description": "Corporate Body identifier.",
+                "required": true,
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": 6369
+                    }
+                }
+            },
+            "doc-id": {
+                "name": "doc-id",
+                "in": "path",
+                "description": "Document identifier.",
+                "required": true,
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "event-id": {
+                "name": "event-id",
+                "in": "path",
+                "description": "Event identifier",
+                "required": true,
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": "MTG-PL-2023-05-09"
+                    }
+                }
+            },
+            "dec-id": {
+                "name": "dec-id",
+                "in": "path",
+                "description": "Decision identifier",
+                "required": true,
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": "MTG-PL-2023-05-09-DEC-155086"
+                    }
+                }
+            },
+            "vot-id": {
+                "name": "vot-id",
+                "in": "path",
+                "description": "Vote identifier",
+                "required": true,
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": "MTG-PL-2023-07-12-VOT-ITM-939384"
+                    }
+                }
+            },
+            "year": {
+                "name": "year",
+                "in": "query",
+                "description": "Year. The format of the values is YYYY.",
+                "required": true,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "default": 2022
+                    }
+                }
+            },
+            "session": {
+                "name": "session",
+                "in": "query",
+                "description": "Plenary Session. Parliament sits monthly in Strasbourg in a four-day part-session (Monday to Thursday). Additional part-sessions are held in Brussels. This parameter refers to the date of the first day of a given part-session. The format of the value is YYYY-MM-DD.",
+                "required": true,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": "2022-09-12"
+                    }
+                }
+            },
+            "vote-method": {
+                "name": "vote-method",
+                "in": "query",
+                "description": "Method of vote",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": "ROLL_CALL_EV"
+                    }
+                }
+            },
+            "filter-output": {
+                "name": "filter-output",
+                "in": "query",
+                "description": "Content filter in the response",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": "voters"
+                    }
+                }
+            },
+            "offset": {
+                "name": "offset",
+                "in": "query",
+                "description": "The number of items to skip before starting to collect the result set.",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0
+                }
+            },
+            "limit": {
+                "name": "limit",
+                "in": "query",
+                "description": "The number of items to return.",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "limit500": {
+                "name": "limit",
+                "in": "query",
+                "description": "The number of items to return.",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "default": 500
+                }
+            },
+            "activity-type": {
+                "name": "activity-type",
+                "in": "query",
+                "description": "A type of an Activity. Values are concepts of the Event authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/event .",
+                "required": false,
+                "style": "form",
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "EP_MEETING_PART",
+                            "EP_PLENARY_SITTING",
+                            "EP_PLENARY_PART_SESSION"
+                        ]
+                    }
+                }
+            },
+            "json-layout-all": {
+                "name": "json-layout",
+                "in": "query",
+                "description": "Define the layaout for Json+ld",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "framed-and-included",
+                        "framed"
+                    ],
+                    "default": "framed"
+                }
+            },
+            "json-layout-fr": {
+                "name": "json-layout",
+                "in": "query",
+                "description": "Define the layaout for Json+ld",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "framed"
+                    ],
+                    "default": "framed"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/meps": {
+            "get": {
+                "tags": [
+                    "MEPS"
+                ],
+                "summary": "Returns the list of all the MEPs",
+                "description": "The service returns data about the MEPs related to the European Parliament.",
+                "operationId": "get_meps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/parliamentary-term"
+                    },
+                    {
+                        "$ref": "#/components/parameters/gender"
+                    },
+                    {
+                        "$ref": "#/components/parameters/political-group"
+                    },
+                    {
+                        "$ref": "#/components/parameters/country-of-representation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MEPS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meps/{mep-id}": {
+            "get": {
+                "tags": [
+                    "MEPS"
+                ],
+                "summary": "Returns a single MEP for the specified mep ID",
+                "description": "The service returns a single MEP for the specified mep ID.",
+                "operationId": "get_mep_by_id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/mep-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meps/show-current": {
+            "get": {
+                "tags": [
+                    "MEPS"
+                ],
+                "summary": "Returns the list of all active MEPs for today's date",
+                "description": "The service returns the list of active MEPs for today's date.",
+                "operationId": "get_active_meps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/gender"
+                    },
+                    {
+                        "$ref": "#/components/parameters/political-group"
+                    },
+                    {
+                        "$ref": "#/components/parameters/country-of-representation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MEPS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meps/show-incoming": {
+            "get": {
+                "tags": [
+                    "MEPS"
+                ],
+                "summary": "Returns the list of all incoming MEPs for the current parliamentary term",
+                "description": "The service returns the list of incoming MEPs for the current parliamentary term.",
+                "operationId": "get_incoming_meps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/gender"
+                    },
+                    {
+                        "$ref": "#/components/parameters/political-group"
+                    },
+                    {
+                        "$ref": "#/components/parameters/country-of-representation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MEPS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meps/show-outgoing": {
+            "get": {
+                "tags": [
+                    "MEPS"
+                ],
+                "summary": "Returns the list of all outgoing MEPs for the current parliamentary term",
+                "description": "The service returns the list of outgoing MEPs for the current parliamentary term.",
+                "operationId": "get_outgoing_meps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/gender"
+                    },
+                    {
+                        "$ref": "#/components/parameters/political-group"
+                    },
+                    {
+                        "$ref": "#/components/parameters/country-of-representation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MEPS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meps/feed": {
+            "get": {
+                "tags": [
+                    "MEPS"
+                ],
+                "summary": "Returns a feed of MEPs (published or updated in the last month).",
+                "description": "The service returns a feed of MEPs (published or updated in the last month).",
+                "operationId": "get_meps_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/corporate-bodies": {
+            "get": {
+                "tags": [
+                    "EP BODIES"
+                ],
+                "summary": "Returns the list of all EP Corporate Bodies",
+                "description": "The service returns a list of all the EP Corporate Bodies.",
+                "operationId": "get_bodies",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/body-classification"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit500"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-BODIES"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/corporate-bodies/feed": {
+            "get": {
+                "tags": [
+                    "EP BODIES"
+                ],
+                "summary": "Returns a feed of EP Corporate Body (published or updated in the last month).",
+                "description": "The service returns a feed of EP Corporate Body (published or updated in the last month).",
+                "operationId": "get_body_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/corporate-bodies/{body-id}": {
+            "get": {
+                "tags": [
+                    "EP BODIES"
+                ],
+                "summary": "Returns a single EP Corporate Body for the specified body ID",
+                "description": "The service returns a single EP Corporate Body for the specified body ID.",
+                "operationId": "get_body_by_id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/body-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    },
+                    {
+                        "$ref": "#/components/parameters/language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/corporate-bodies/show-current": {
+            "get": {
+                "tags": [
+                    "EP BODIES"
+                ],
+                "summary": "Returns the list of all current bodies for today's date",
+                "description": "The service returns the list of all current bodies for today's date.",
+                "operationId": "get_current_bodies",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-BODIES"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/documents": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns the list of all EP Documents",
+                "description": "The service returns the list of all EP Documents.",
+                "operationId": "get_documents",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/work-type-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit500"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-DOCUMENTS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/documents/feed": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a feed of EP Documents (published or updated in the last month).",
+                "description": "The service returns a feed of EP Documents (published or updated in the last month).",
+                "operationId": "get_documents_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/documents/{doc-id}": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a single EP Document for the specified doc ID",
+                "description": "The service returns a single EP Document for the specified doc ID.",
+                "operationId": "get_documents_by_id",
+                "parameters": [
+                    {
+                        "name": "doc-id",
+                        "in": "path",
+                        "description": "Document identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "A-9-2022-0066"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/plenary-documents": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns the list of all EP Plenary Documents",
+                "description": "The service returns the list of all EP Plenary Documents.",
+                "operationId": "get_plenary_docs",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/year"
+                    },
+                    {
+                        "name": "work-type",
+                        "in": "query",
+                        "description": "A type of a Work. Values are concepts of the Resource type authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/resource-type .",
+                        "required": false,
+                        "style": "form",
+                        "explode": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "REPORT_EP",
+                                    "MOTION_RES",
+                                    "JOINT_MOTION_RES",
+                                    "QUEST_ORAL_PART_SESSION_EP"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-DOCUMENTS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/plenary-documents/{doc-id}": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a single EP Plenary Document for the specified doc ID",
+                "description": "The service returns a single EP Plenary Document for the specified doc ID.",
+                "operationId": "get_plenary_docs_by_id",
+                "parameters": [
+                    {
+                        "name": "doc-id",
+                        "in": "path",
+                        "description": "Document identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "A-9-2023-0273"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    },
+                    {
+                        "$ref": "#/components/parameters/language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/plenary-documents/feed": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a feed of EP Plenary Documents (published or updated in the last month).",
+                "description": "The service returns a feed of EP Plenary Documents (published or updated in the last month).",
+                "operationId": "get_plenary_docs_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/parliamentary-questions": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns the list of all EP Questions",
+                "description": "The service returns the list of all EP Questions.",
+                "operationId": "get_questions",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/year"
+                    },
+                    {
+                        "name": "work-type",
+                        "in": "query",
+                        "description": "A type of a Work. Values are concepts of the Resource type authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/resource-type .",
+                        "required": false,
+                        "style": "form",
+                        "explode": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "QUEST_WRITTEN_PRIORITY_EP",
+                                    "QUEST_WRITTEN",
+                                    "QUEST_ORAL",
+                                    "INTERPEL_MAJ_EP",
+                                    "INTERPEL_MIN_EP",
+                                    "QUEST_TIME"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-DOCUMENTS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/parliamentary-questions/{doc-id}": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a single EP Question document for the specified doc ID",
+                "description": "The service returns a single EP Question document for the specified doc ID.",
+                "operationId": "get_questions_by_id",
+                "parameters": [
+                    {
+                        "name": "doc-id",
+                        "in": "path",
+                        "description": "Document identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "E-9-2022-000342"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    },
+                    {
+                        "$ref": "#/components/parameters/language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/parliamentary-questions/feed": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a feed of EP Questions Documents (published or updated in the last month).",
+                "description": "The service returns a feed of EP Questions Documents (published or updated in the last month).",
+                "operationId": "get_questions_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/plenary-session-documents": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns the list of all EP Plenary Session documents",
+                "description": "The service returns the list of all EP Plenary Session documents.",
+                "operationId": "get_ps_doc",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/session"
+                    },
+                    {
+                        "$ref": "#/components/parameters/work-type"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-DOCUMENTS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/plenary-session-documents/{doc-id}": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a single EP Plenary Session document for the specified doc ID",
+                "description": "The service returns a single EP Plenary Session document for the specified doc ID.",
+                "operationId": "get_ps_doc_by_id",
+                "parameters": [
+                    {
+                        "name": "doc-id",
+                        "in": "path",
+                        "description": "Document identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "PV-9-2023-05-09"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    },
+                    {
+                        "$ref": "#/components/parameters/language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/plenary-session-documents/feed": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a feed of EP Plenary Session Documents (published or updated in the last month).",
+                "description": "The service returns a feed of EP Plenary Session Documents (published or updated in the last month).",
+                "operationId": "get_ps_doc_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/adopted-texts": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns the list of all EP Adopted Texts",
+                "description": "The service returns the list of all EP Adopted Texts.",
+                "operationId": "get_adopted_texts",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/year"
+                    },
+                    {
+                        "name": "work-type",
+                        "in": "query",
+                        "description": "A type of a Work. Values are concepts of the Resource type authority table maintained by the Publications Office of the European Union: https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://publications.europa.eu/resource/authority/resource-type .",
+                        "required": false,
+                        "style": "form",
+                        "explode": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "ADOPT_TEXT"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-DOCUMENTS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/adopted-texts/feed": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a feed of EP Adopted texts (published or updated in the last month).",
+                "description": "The service returns a feed of EP Adopted texts (published or updated in the last month).",
+                "operationId": "get_adopted_texts_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/adopted-texts/{doc-id}": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a single EP Adopted Text document for the specified doc ID",
+                "description": "The service returns a single EP Adopted Text document for the specified doc ID.",
+                "operationId": "get_adopted_texts_by_id",
+                "parameters": [
+                    {
+                        "name": "doc-id",
+                        "in": "path",
+                        "description": "Document identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "TA-9-2022-0201"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    },
+                    {
+                        "$ref": "#/components/parameters/language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/committee-documents": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns the list of all EP Committe Documents",
+                "description": "The service returns the list of all EP Committe Documents.",
+                "operationId": "get_committee_documents",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/committee"
+                    },
+                    {
+                        "$ref": "#/components/parameters/parliamentary-term-optional"
+                    },
+                    {
+                        "$ref": "#/components/parameters/work-type-committe"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/committee-documents/{doc-id}": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a single EP Committe Document for the specified doc ID",
+                "description": "The service returns a single EP Committe Document for the specified doc ID.",
+                "operationId": "get_committee_documents_by_id",
+                "parameters": [
+                    {
+                        "name": "doc-id",
+                        "in": "path",
+                        "description": "Document identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "ENVI-PR-753549"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/committee-documents/feed": {
+            "get": {
+                "tags": [
+                    "EP DOCUMENTS"
+                ],
+                "summary": "Returns a feed of EP Committe Document (published or updated in the last month).",
+                "description": "The service returns a feed of EP Committe Document (published or updated in the last month).",
+                "operationId": "get_committe_documents_feed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/atom+xml": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meetings": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns the list of all EP Meetings",
+                "description": "The service returns the list of all EP Meetings. Note: this is a beta version for the current release.",
+                "operationId": "get_meetings",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/year"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-EVENTS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meetings/{event-id}": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns a single EP Meeting for the specified event ID",
+                "description": "The service returns a single EP Meeting for the specified event ID. Note: this is a beta version for the current release.",
+                "operationId": "get_meetings_by_id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/event-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    },
+                    {
+                        "$ref": "#/components/parameters/language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meetings/{event-id}/decisions": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns all decisions in a single EP Meeting",
+                "description": "The service returns all decisions for a single EP Meeting ID. Note: this is a beta version for the current release, the scope is limited to roll-call-votes.",
+                "operationId": "get_all_decisions_by_event_id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/event-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/vote-method"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filter-output"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-all"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meetings/{event-id}/decisions/{dec-id}": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns all decisions in a single EP Meeting",
+                "description": "The service returns a single Decision for the specified Decision ID. Note: this is a beta version for the current release, the scope is limited to roll-call-votes.",
+                "operationId": "get_specific_decision_by_event_id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/event-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dec-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/vote-method"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filter-output"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-all"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meetings/{event-id}/vote-results": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns all vote results in a single EP Meeting",
+                "description": "The service returns all vote results for a single EP Meeting ID. Note: this is a beta version for the current release, the scope is limited to roll-call-votes.",
+                "operationId": "get_vote_results",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/event-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/meetings/{event-id}/vote-results/{vot-id}": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns all vote results for a single Decision id",
+                "description": "The service returns a single Vote among a list of vote results for a specified Meeting ID. Note: this is a beta version for the current release, the scope is limited to roll-call-votes.",
+                "operationId": "get_specific_vote_result_by_decision_id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/event-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/vot-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/json-layout-fr"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/events": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns the list of all EP Events",
+                "description": "The service returns the list of all EP Events.",
+                "operationId": "get_events",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/activity-type"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    },
+                    {
+                        "$ref": "#/components/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/components/parameters/limit"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EP-EVENTS"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/events/{event-id}": {
+            "get": {
+                "tags": [
+                    "EP EVENTS"
+                ],
+                "summary": "Returns a single EP Events for the specified event ID",
+                "description": "The service returns a single EP Events for the specified event ID.",
+                "operationId": "get_events_by_id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/event-id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/format-all"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    }
+}

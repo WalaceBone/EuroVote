@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: European Parliament Open Data API
+  version: 1.0.0
+  description: API for accessing data about the European Parliament.
+
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /meps:
+    get:
+      summary: Get a list of MEPs
+      responses:
+        '200':
+          description: A list of MEPs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MEP'
+
+  /epbodies:
+    get:
+      summary: Get a list of European Parliament Bodies
+      responses:
+        '200':
+          description: A list of European Parliament Bodies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EPBody'
+
+  /epdocuments:
+    get:
+      summary: Get a list of European Parliament Documents
+      responses:
+        '200':
+          description: A list of European Parliament Documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EPDocument'
+
+  /epevents:
+    get:
+      summary: Get a list of European Parliament Events
+      responses:
+        '200':
+          description: A list of European Parliament Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EPEvent'
+
+components:
+  schemas:
+    MEP:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+
+    EPBody:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+
+    EPDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+
+    EPEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
