@@ -1,4 +1,4 @@
-#EuroVote
+# EuroVote
 
 The European Parliament Voting Data API is a comprehensive platform for accessing and analyzing voting records and legislative data from the European Parliament. This API is built in Go and provides a user-friendly interface for retrieving information about votes, roll call votes, political groups, and more.
 
@@ -11,10 +11,9 @@ The European Parliament Voting Data API is a comprehensive platform for accessin
 
 ## Getting Started
 
-Follow these instructions to set up and run the project locally. 
+Follow these instructions to set up and run the project locally.
 
 ### Prerequisites
-
 
 ### Installation
 
@@ -32,7 +31,8 @@ Follow these instructions to set up and run the project locally.
 1. Start the API server:
 
    ```shell
-   go run main.go
+   make build
+   make run
    ```
 
 2. Access the API at `http://localhost:8080` (or a different port if specified).
@@ -61,3 +61,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 - [List any acknowledgments or references...]
 
+TODO Reecrire readme
