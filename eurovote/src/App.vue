@@ -1,26 +1,17 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-
-  <div>
-    <router-link to="/">Home</router-link>
-    <router-link to="/d3">d3</router-link>
-  </div>
-
-  <div id="app">
-    <router-view></router-view>
-  </div>
-
+  <FetchMeps />
 
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FetchMeps from './components/FetchMeps.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    FetchMeps
+
   }
 }
 </script>

@@ -2,7 +2,8 @@ package main
 
 import (
 	"EuroVote/cmd/models"
-	"encoding/json"
+	"encoding/xml"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,13 +33,15 @@ func (app *App) GetMEPHandler(c *gin.Context) {
 	defer resp.Body.Close()
 
 	// Read and parse the response
-	var mep models.Person
-	if err := json.NewDecoder(resp.Body).Decode(&mep); err != nil {
+	var mep models.RDF
+	if err := xml.NewDecoder(resp.Body).Decode(&mep); err != nil {
+		log.Println("Error is:")
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, mep)
+	c.JSON(http.StatusOK, mep.Person[0])
 }
 
 func (app *App) GetMEPsHandler(c *gin.Context) {
@@ -53,11 +56,11 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 	defer resp.Body.Close()
 
 	// Read and parse the response
-	var meps []models.Person
-	if err := json.NewDecoder(resp.Body).Decode(&meps); err != nil {
+	var meps models.RDF
+	if err := xml.NewDecoder(resp.Body).Decode(&meps); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, meps)
+	c.JSON(http.StatusOK, meps.Person)
 }

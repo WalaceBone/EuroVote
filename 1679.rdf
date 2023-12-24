@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:eli-dl="http://data.europa.eu/eli/eli-draft-legislation-ontology#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:epvoc="https://data.europarl.europa.eu/def/epvoc#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:euvoc="http://publications.europa.eu/ontology/euvoc#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:dcat="http://www.w3.org/ns/dcat#"
+    xmlns:person="http://www.w3.org/ns/person#"
+    xmlns:org="http://www.w3.org/ns/org#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <foaf:Person rdf:about="https://data.europarl.europa.eu/person/1679">
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-85893"/>
+    <vcard:hasGender rdf:resource="http://publications.europa.eu/resource/authority/human-sex/MALE"/>
+    <foaf:img>
+      <foaf:Image rdf:about="https://www.europarl.europa.eu/mepphoto/1679.jpg"/>
+    </foaf:img>
+    <skos:notation rdf:datatype="https://data.europarl.europa.eu/def/epvoc#codictPersonId"
+    >1679</skos:notation>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-116820"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-m-12344"/>
+    <rdfs:label>Louis Eyraud</rdfs:label>
+    <person:placeOfBirth>Lyon</person:placeOfBirth>
+    <foaf:givenName>Louis</foaf:givenName>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-80121"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-72183"/>
+    <epvoc:upperFamilyName>EYRAUD</epvoc:upperFamilyName>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-94423"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-86621"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-106244"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-94422"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-116821"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-m-7645"/>
+    <dcterms:identifier>1679</dcterms:identifier>
+    <foaf:familyName>Eyraud</foaf:familyName>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-106247"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-106245"/>
+    <epvoc:deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >1993-09-28T23:00:00.000Z</epvoc:deathDate>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-80244"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-106246"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-77742"/>
+    <epvoc:upperGivenName>LOUIS</epvoc:upperGivenName>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-79826"/>
+    <person:citizenship rdf:resource="http://publications.europa.eu/resource/authority/country/FRA"/>
+    <org:hasMembership rdf:resource="https://data.europarl.europa.eu/membership/1679-f-79410"/>
+    <vcard:hasHonorificPrefix rdf:resource="http://publications.europa.eu/resource/authority/honorific/MR"/>
+    <vcard:bday rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >1922-05-17T23:00:00.000Z</vcard:bday>
+  </foaf:Person>
+</rdf:RDF>

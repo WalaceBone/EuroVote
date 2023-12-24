@@ -3,8 +3,10 @@ package main
 import (
 	"EuroVote/cmd/models"
 	"encoding/json"
+	"fmt"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +25,9 @@ func loadConfig() (models.Config, error) {
 
 func main() {
 
+	fmt.Println("Starting the application...")
+	fmt.Println(os.Getenv("PORT"))
+
 	Config, err := loadConfig()
 
 	if err != nil {
@@ -36,10 +41,13 @@ func main() {
 
 	// Setup routes
 
+	app.Router.Use(cors.Default())
 	app.SetupRoutes()
 
 	// Define the MEPs endpoint
 
-	app.Router.Run()
-
+	err = app.Router.Run()
+	if err != nil {
+		panic(err)
+	}
 }

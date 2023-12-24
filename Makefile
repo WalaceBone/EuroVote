@@ -5,7 +5,7 @@ GORUN=$(GOCMD) run
 GOCLEAN=$(GOCMD) clean
 
 # Binary name for your Go program
-BINARY_NAME=eurovote
+BINARY_DIR=bin
 
 help:
 	@echo "Available targets:"
@@ -24,17 +24,17 @@ help:
 
 
 
-all: air
+all: build run
 
 build:
-	$(GOBUILD) -o $(BINARY_NAME) -v
+	$(GOBUILD) -o $(BINARY_DIR) -v ./...
 
 run:
-	$(GORUN) .
+	./bin/api
 
 clean:
 	$(GOCLEAN)
-	rm -f $(BINARY_NAME)
+	rm -f $(BINARY_DIR)
 
 fclean: clean run
 
