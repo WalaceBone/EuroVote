@@ -7,6 +7,8 @@
 *.test
 *.out
 
+.env
+
 # Output directories
 /bin/
 /obj/
@@ -14,6 +16,7 @@
 
 # Dependency directories
 /vendor/
+/node_modules/
 
 # IDEs and editors
 /.vscode/
