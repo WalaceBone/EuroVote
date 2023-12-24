@@ -26,11 +26,30 @@ func (app *App) SetupRoutes() {
 	app.Router.GET("/meps/show-current", app.GetMEPsShowCurrentHandler)
 	app.Router.GET("/meps/show-incoming", app.GetMEPsShowIncomingHandler)
 	app.Router.GET("/meps/show-outgoing", app.GetMEPsShowOutgoingHandler)
+
+	app.Router.GET("/meps/list", app.GetMEPsListHandler)
 }
 
 // MEPs endpoints
 // Returns data about the Members of the European Parliament (MEPs)
 // ref: https://data.europarl.europa.eu/en/developer-corner/opendata-api
+
+// Returns a list of MEPs
+func (app *App) GetMEPsListHandler(c *gin.Context) {
+	var meps []models.Person
+	result := app.DB.Find(&meps)
+
+	fmt.Println(result.RowsAffected)
+	fmt.Println(len(meps))
+	if result.Error != nil {
+		fmt.Println("Error is:")
+		fmt.Println(result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, meps)
+}
 
 // Returns an Atom feed of MEPs
 func (app *App) GetMEPsFeedHandler(c *gin.Context) {
@@ -215,7 +234,34 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 	}
 
 	for _, person := range meps.Person {
-		result := app.DB.Create(&person)
+		// Add id and creationDate fields to person
+		// person.ID = generateID() // Replace generateID() with your own logic to generate unique IDs
+		person.CreatedAt = time.Now()
+
+		var existingPerson models.Person
+		result := app.DB.Where("given_name = ?", person.GivenName).First(&existingPerson)
+		if result.Error != nil {
+			if result.Error == gorm.ErrRecordNotFound {
+				// Person does not exist, create it
+				result = app.DB.Create(&person)
+				if result.Error != nil {
+					fmt.Println("Error is:")
+					fmt.Println(result.Error)
+					c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+					return
+				}
+			} else {
+				// Error occurred while querying the database
+				fmt.Println("Error is:")
+				fmt.Println(result.Error)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+				return
+			}
+		} else {
+			// Person already exists
+			fmt.Println("Person already exists")
+		}
+
 		if result.Error != nil {
 			fmt.Println("Error is:")
 			fmt.Println(result.Error)
@@ -224,5 +270,7 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, meps.Person)
+	app.GetMEPsListHandler(c)
+
+	// c.JSON(http.StatusOK, meps.Person)
 }
