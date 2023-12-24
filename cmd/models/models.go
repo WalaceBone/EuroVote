@@ -2,16 +2,19 @@ package models
 
 import (
 	"encoding/xml"
+
+	"gorm.io/gorm"
 )
 
 type Person struct {
-	XMLName    xml.Name `xml:"Person"`
-	About      string   `xml:"about,attr"`
-	SortLabel  string   `xml:"sortLabel"`
-	Label      string   `xml:"label"`
-	Identifier string   `xml:"identifier"`
-	GivenName  string   `xml:"givenName"`
-	FamilyName string   `xml:"familyName"`
+	gorm.Model
+	XMLName    xml.Name `xml:"Person" gorm:"-"`
+	About      string   `xml:"about,attr" gorm:"type:text"`
+	SortLabel  string   `xml:"sortLabel" gorm:"type:text"`
+	Label      string   `xml:"label" gorm:"type:text"`
+	Identifier string   `xml:"identifier" gorm:"type:text"`
+	GivenName  string   `xml:"givenName" gorm:"type:text"`
+	FamilyName string   `xml:"familyName" gorm:"type:text"`
 }
 
 type RDF struct {

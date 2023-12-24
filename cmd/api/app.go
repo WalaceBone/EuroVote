@@ -10,11 +10,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type App struct {
 	Router *gin.Engine
 	Config models.Config
+	DB     *gorm.DB
 }
 
 func (app *App) SetupRoutes() {
@@ -182,6 +184,14 @@ func (app *App) GetMEPHandler(c *gin.Context) {
 		return
 	}
 
+	result := app.DB.Create(&mep.Person[0])
+	if result.Error != nil {
+		fmt.Println("Error is:")
+		fmt.Println(result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, mep.Person[0])
 }
 
@@ -202,6 +212,16 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 	if err := xml.NewDecoder(resp.Body).Decode(&meps); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	for _, person := range meps.Person {
+		result := app.DB.Create(&person)
+		if result.Error != nil {
+			fmt.Println("Error is:")
+			fmt.Println(result.Error)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, meps.Person)
