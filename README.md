@@ -44,6 +44,12 @@ Follow these instructions to set up and run the project locally.
 
 For detailed API documentation, including available endpoints and data structures, refer to the [API Documentation](docs/api.md).
 
+available by running
+
+```bash
+godoc -http=:6060
+```
+
 ## Data Visualization
 
 - [Explore voting patterns...]
