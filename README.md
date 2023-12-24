@@ -28,6 +28,10 @@ Follow these instructions to set up and run the project locally.
 
 ### Usage
 
+start db
+docker run --name eurovotes-db -e POSTGRES_USER=postgres -e POSTGRES_PA
+SSWORD=postgres -e POSTGRES_DB=postgres -p 5432:5432 -d postgres
+
 1. Start the API server:
 
    ```shell
