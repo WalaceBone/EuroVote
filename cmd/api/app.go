@@ -27,7 +27,7 @@ func (app *App) SetupRoutes() {
 	app.Router.GET("/meps/show-incoming", app.GetMEPsShowIncomingHandler)
 	app.Router.GET("/meps/show-outgoing", app.GetMEPsShowOutgoingHandler)
 
-	app.Router.GET("/meps/list", app.GetMEPsListHandler)
+	// app.Router.GET("/meps/list", app.GetMEPsListHandler)
 }
 
 // MEPs endpoints
@@ -35,7 +35,7 @@ func (app *App) SetupRoutes() {
 // ref: https://data.europarl.europa.eu/en/developer-corner/opendata-api
 
 // Returns a list of MEPs
-func (app *App) GetMEPsListHandler(c *gin.Context) {
+func (app *App) GetMEPsListHandler(c *gin.Context) []models.Person {
 	var meps []models.Person
 	result := app.DB.Find(&meps)
 
@@ -45,10 +45,11 @@ func (app *App) GetMEPsListHandler(c *gin.Context) {
 		fmt.Println("Error is:")
 		fmt.Println(result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-		return
+		return nil
 	}
 
 	c.JSON(http.StatusOK, meps)
+	return meps
 }
 
 // Returns an Atom feed of MEPs
@@ -214,7 +215,56 @@ func (app *App) GetMEPHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, mep.Person[0])
 }
 
+func InsertOrUpdatePerson(db *gorm.DB, personData *models.Person) error {
+	var existingPerson models.Person
+	// Try to find the record
+	log.Println("Identifier is:")
+	log.Println(personData.Identifier)
+
+	result := db.Where("identifier = ?", personData.Identifier).First(&existingPerson)
+	log.Println("Result is:")
+	log.Println(result)
+	if result.Error == gorm.ErrRecordNotFound {
+		// Record not found, create a new one
+		if createResult := db.Create(personData); createResult.Error != nil {
+			return createResult.Error // Handle create error
+		}
+		log.Println("New person is:")
+		log.Println(personData)
+	} else {
+		// Record found, update it
+		existingPerson.About = personData.About
+		existingPerson.SortLabel = personData.SortLabel
+		existingPerson.Label = personData.Label
+		existingPerson.Identifier = personData.Identifier
+		existingPerson.GivenName = personData.GivenName
+		existingPerson.FamilyName = personData.FamilyName
+		existingPerson.Memberships = personData.Memberships
+		existingPerson.CreatedAt = personData.CreatedAt
+		existingPerson.UpdatedAt = personData.UpdatedAt
+		existingPerson.Birthday = personData.Birthday
+		existingPerson.Citizenship = personData.Citizenship
+		existingPerson.DeathDate = personData.DeathDate
+		existingPerson.HonorificPrefix = personData.HonorificPrefix
+		existingPerson.Gender = personData.Gender
+		existingPerson.PlaceOfBirth = personData.PlaceOfBirth
+		existingPerson.UpperFamilyName = personData.UpperFamilyName
+		existingPerson.UpperGivenName = personData.UpperGivenName
+		existingPerson.Notation = personData.Notation
+
+		// Update other fields as necessary
+		if updateResult := db.Save(&existingPerson); updateResult.Error != nil {
+			return updateResult.Error // Handle update error
+		}
+		log.Println("Existing person is:")
+		log.Println(existingPerson)
+	}
+
+	return nil
+}
+
 // Returns data about all MEPs
+// /meps
 func (app *App) GetMEPsHandler(c *gin.Context) {
 	apiUrl := app.Config.EuroparlAPIURL + "/meps" // Use the config URL
 
@@ -238,39 +288,89 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 		// person.ID = generateID() // Replace generateID() with your own logic to generate unique IDs
 		person.CreatedAt = time.Now()
 
+		log.Println("Person is:")
+		log.Println(person)
 		var existingPerson models.Person
-		result := app.DB.Where("given_name = ?", person.GivenName).First(&existingPerson)
-		if result.Error != nil {
-			if result.Error == gorm.ErrRecordNotFound {
-				// Person does not exist, create it
-				result = app.DB.Create(&person)
-				if result.Error != nil {
-					fmt.Println("Error is:")
-					fmt.Println(result.Error)
-					c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-					return
-				}
-			} else {
-				// Error occurred while querying the database
-				fmt.Println("Error is:")
-				fmt.Println(result.Error)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		result := app.DB.Where("identifier = ?", person.Identifier).First(&existingPerson)
+		log.Println("Result is:")
+		log.Println(result)
+		if result.Error == gorm.ErrRecordNotFound {
+
+			err = InsertOrUpdatePerson(app.DB, &person)
+			if err != nil {
 				return
 			}
-		} else {
-			// Person already exists
-			fmt.Println("Person already exists")
 		}
+		// result := app.DB.Create(&person)
+		// if result.Error != nil {
+		// 	if result.Error == gorm.ErrRecordNotFound {
+		// 		// Person does not exist, create it
 
-		if result.Error != nil {
-			fmt.Println("Error is:")
-			fmt.Println(result.Error)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-			return
-		}
+		// 		// result = app.DB.Create(&person)
+
+		// 		if result.Error != nil {
+		// 			fmt.Println("Error is:")
+		// 			fmt.Println(result.Error)
+		// 			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		// 			return
+		// 		}
+		// 	} else {
+		// 		// Error occurred while querying the database
+		// 		fmt.Println("Error is:")
+		// 		fmt.Println(result.Error)
+
+		// 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		// 		return
+		// 	}
+		// } else {
+		// 	// Person already exists
+		// 	fmt.Println("Person already exists")
+		// }
+
+		// if result.Error != nil {
+		// 	fmt.Println("Error is:")
+		// 	fmt.Println(result.Error)
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		// 	return
+		// }
 	}
+	// app.LoadAndSavePersonData(c)
 
 	app.GetMEPsListHandler(c)
-
 	// c.JSON(http.StatusOK, meps.Person)
+}
+
+func (app *App) LoadAndSavePersonData(c *gin.Context) error {
+	var aboutPerson models.RDF
+
+	listPerson := app.GetMEPsListHandler(c)
+	for _, person := range listPerson {
+
+		res, err := http.Get(person.Identifier)
+		log.Println("Person about is:")
+		log.Println(person)
+
+		if err != nil {
+			log.Println("Error is:")
+			log.Println(err)
+			return err
+		}
+		defer res.Body.Close()
+
+		// Read and parse the response
+
+		if err := xml.NewDecoder(res.Body).Decode(&aboutPerson); err != nil {
+			log.Println("Error is:")
+			log.Println(err)
+			return err
+		}
+		for _, about := range aboutPerson.Person {
+			about.UpdatedAt = time.Now()
+			InsertOrUpdatePerson(app.DB, &about)
+
+		}
+
+	}
+
+	return nil
 }

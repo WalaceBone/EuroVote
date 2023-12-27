@@ -73,7 +73,7 @@ func main() {
 		DB:     db,
 	}
 
-	app.DB.AutoMigrate(&models.Person{})
+	app.DB.AutoMigrate(&models.Person{}, &models.Image{})
 
 	// Setup routes
 
