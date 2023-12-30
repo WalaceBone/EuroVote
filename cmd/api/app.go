@@ -220,8 +220,9 @@ func InsertOrUpdatePerson(db *gorm.DB, personData *models.Person) error {
 	// Try to find the record
 	log.Println("Identifier is:")
 	log.Println(personData.Identifier)
-
-	result := db.Where("identifier = ?", personData.Identifier).First(&existingPerson)
+	log.Println("ID is:")
+	log.Println(personData.ID)
+	result := db.Where("ID = ?", personData.ID).First(&existingPerson)
 	log.Println("Result is:")
 	log.Println(result)
 	if result.Error == gorm.ErrRecordNotFound {
@@ -263,6 +264,10 @@ func InsertOrUpdatePerson(db *gorm.DB, personData *models.Person) error {
 	return nil
 }
 
+func InsertOrUpdateBatchPerson(db *gorm.DB, personData []models.Person) error {
+	return db.CreateInBatches(personData, 100).Error
+}
+
 // Returns data about all MEPs
 // /meps
 func (app *App) GetMEPsHandler(c *gin.Context) {
@@ -283,58 +288,61 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 		return
 	}
 
-	for _, person := range meps.Person {
-		// Add id and creationDate fields to person
-		// person.ID = generateID() // Replace generateID() with your own logic to generate unique IDs
-		person.CreatedAt = time.Now()
-
-		log.Println("Person is:")
-		log.Println(person)
-		var existingPerson models.Person
-		result := app.DB.Where("identifier = ?", person.Identifier).First(&existingPerson)
-		log.Println("Result is:")
-		log.Println(result)
-		if result.Error == gorm.ErrRecordNotFound {
-
-			err = InsertOrUpdatePerson(app.DB, &person)
-			if err != nil {
-				return
-			}
-		}
-		// result := app.DB.Create(&person)
-		// if result.Error != nil {
-		// 	if result.Error == gorm.ErrRecordNotFound {
-		// 		// Person does not exist, create it
-
-		// 		// result = app.DB.Create(&person)
-
-		// 		if result.Error != nil {
-		// 			fmt.Println("Error is:")
-		// 			fmt.Println(result.Error)
-		// 			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-		// 			return
-		// 		}
-		// 	} else {
-		// 		// Error occurred while querying the database
-		// 		fmt.Println("Error is:")
-		// 		fmt.Println(result.Error)
-
-		// 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-		// 		return
-		// 	}
-		// } else {
-		// 	// Person already exists
-		// 	fmt.Println("Person already exists")
-		// }
-
-		// if result.Error != nil {
-		// 	fmt.Println("Error is:")
-		// 	fmt.Println(result.Error)
-		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
-		// 	return
-		// }
+	err = InsertOrUpdateBatchPerson(app.DB, meps.Person)
+	if err != nil {
+		return
 	}
-	// app.LoadAndSavePersonData(c)
+
+	// for _, person := range meps.Person {
+	// // Add id and creationDate fields to person
+	// // person.ID = generateID() // Replace generateID() with your own logic to generate unique IDs
+	// person.CreatedAt = time.Now()
+
+	// var existingPerson models.Person
+	// result := app.DB.Where("identifier = ?", person.Identifier).First(&existingPerson)
+
+	// log.Println(existingPerson.ID)
+	// if result.Error == gorm.ErrRecordNotFound {
+
+	// 	err = InsertOrUpdateBatchPerson(app.DB, &person)
+	// 	if err != nil {
+	// 		return
+	// 	}
+	// }
+	// result := app.DB.Create(&person)
+	// if result.Error != nil {
+	// 	if result.Error == gorm.ErrRecordNotFound {
+	// 		// Person does not exist, create it
+
+	// 		// result = app.DB.Create(&person)
+
+	// 		if result.Error != nil {
+	// 			fmt.Println("Error is:")
+	// 			fmt.Println(result.Error)
+	// 			c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	// 			return
+	// 		}
+	// 	} else {
+	// 		// Error occurred while querying the database
+	// 		fmt.Println("Error is:")
+	// 		fmt.Println(result.Error)
+
+	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	// 		return
+	// 	}
+	// } else {
+	// 	// Person already exists
+	// 	fmt.Println("Person already exists")
+	// }
+
+	// if result.Error != nil {
+	// 	fmt.Println("Error is:")
+	// 	fmt.Println(result.Error)
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	// 	return
+	// }
+	// }
+	app.LoadAndSavePersonData(c)
 
 	app.GetMEPsListHandler(c)
 	// c.JSON(http.StatusOK, meps.Person)
@@ -346,7 +354,7 @@ func (app *App) LoadAndSavePersonData(c *gin.Context) error {
 	listPerson := app.GetMEPsListHandler(c)
 	for _, person := range listPerson {
 
-		res, err := http.Get(person.Identifier)
+		res, err := http.Get(person.About)
 		log.Println("Person about is:")
 		log.Println(person)
 
