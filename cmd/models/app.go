@@ -1,25 +1,77 @@
-package main
+package models
 
 import (
-	"EuroVote/cmd/models"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-type App struct {
-	Router *gin.Engine
-	Config models.Config
-	DB     *gorm.DB
+func loadConfig() (Config, error) {
+	var config Config
+	configFile, err := os.Open("config/config.json")
+	if err != nil {
+		return config, err
+	}
+	defer configFile.Close()
+
+	jsonParser := json.NewDecoder(configFile)
+	err = jsonParser.Decode(&config)
+	return config, err
+}
+
+func (app *App) Initialize() error {
+	// Connect to the database
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file:", err)
+	}
+	app.Config, err = loadConfig()
+	if err != nil {
+		panic(err)
+	}
+	dbHost := os.Getenv("DB_HOST")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	dbPort := os.Getenv("DB_PORT")
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", dbHost, dbUser, dbPassword, dbName, dbPort)
+	app.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+	err = app.DB.AutoMigrate(&Person{})
+	if err != nil {
+		log.Fatal("Failed to migrate database:", err)
+		return err
+	}
+
+	// Set up the router
+	app.Router = gin.Default()
+	app.Router.Use(cors.Default())
+	// app.DB.AutoMigrate(&Image{})
+	app.SetupRoutes()
+
+	return nil
 }
 
 func (app *App) SetupRoutes() {
+
+	// MEPs endpoints
 	app.Router.GET("/meps", app.GetMEPsHandler)
 	app.Router.GET("/meps/:mepId", app.GetMEPHandler)
 	app.Router.GET("/meps/feed", app.GetMEPsFeedHandler)
@@ -27,6 +79,11 @@ func (app *App) SetupRoutes() {
 	app.Router.GET("/meps/show-incoming", app.GetMEPsShowIncomingHandler)
 	app.Router.GET("/meps/show-outgoing", app.GetMEPsShowOutgoingHandler)
 
+	// Meetings endpoints
+	app.Router.GET("/meetings", app.GetMeetingsHandler)
+	// app.Router.GET("/meetings/:event-id", app.GetMeetingHandler)
+
+	//
 	// app.Router.GET("/meps/list", app.GetMEPsListHandler)
 }
 
@@ -35,8 +92,8 @@ func (app *App) SetupRoutes() {
 // ref: https://data.europarl.europa.eu/en/developer-corner/opendata-api
 
 // Returns a list of MEPs
-func (app *App) GetMEPsListHandler(c *gin.Context) []models.Person {
-	var meps []models.Person
+func (app *App) GetMEPsListHandler(c *gin.Context) []Person {
+	var meps []Person
 	result := app.DB.Find(&meps)
 
 	fmt.Println(result.RowsAffected)
@@ -196,7 +253,7 @@ func (app *App) GetMEPHandler(c *gin.Context) {
 	defer resp.Body.Close()
 
 	// Read and parse the response
-	var mep models.RDF
+	var mep RDF
 	if err := xml.NewDecoder(resp.Body).Decode(&mep); err != nil {
 		log.Println("Error is:")
 		log.Println(err)
@@ -215,8 +272,8 @@ func (app *App) GetMEPHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, mep.Person[0])
 }
 
-func InsertOrUpdatePerson(db *gorm.DB, personData *models.Person) error {
-	var existingPerson models.Person
+func InsertOrUpdatePerson(db *gorm.DB, personData *Person) error {
+	var existingPerson Person
 	// Try to find the record
 	log.Println("Identifier is:")
 	log.Println(personData.Identifier)
@@ -264,7 +321,7 @@ func InsertOrUpdatePerson(db *gorm.DB, personData *models.Person) error {
 	return nil
 }
 
-func InsertOrUpdateBatchPerson(db *gorm.DB, personData []models.Person) error {
+func InsertOrUpdateBatchPerson(db *gorm.DB, personData []Person) error {
 	return db.CreateInBatches(personData, 100).Error
 }
 
@@ -282,7 +339,7 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 	defer resp.Body.Close()
 
 	// Read and parse the response
-	var meps models.RDF
+	var meps RDF
 	if err := xml.NewDecoder(resp.Body).Decode(&meps); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -298,7 +355,7 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 	// // person.ID = generateID() // Replace generateID() with your own logic to generate unique IDs
 	// person.CreatedAt = time.Now()
 
-	// var existingPerson models.Person
+	// var existingPerson Person
 	// result := app.DB.Where("identifier = ?", person.Identifier).First(&existingPerson)
 
 	// log.Println(existingPerson.ID)
@@ -348,8 +405,34 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 	// c.JSON(http.StatusOK, meps.Person)
 }
 
+// Meetings endpoints
+// Returns data about the meetings of the European Parliament
+// ref: https://data.europarl.europa.eu/en/developer-corner/opendata-api
+
+// Returns a list of meetings
+// /meetings
+func (app *App) GetMeetingsHandler(c *gin.Context) {
+	apiUrl := app.Config.EuroparlAPIURL + "/meetings" // Use the config URL
+
+	resp, err := http.Get(apiUrl)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve data"})
+		return
+	}
+	defer resp.Body.Close()
+
+	// Read and print the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read response body"})
+		return
+	}
+
+	c.Data(http.StatusOK, "application/ld+json", body)
+}
+
 func (app *App) LoadAndSavePersonData(c *gin.Context) error {
-	var aboutPerson models.RDF
+	var aboutPerson RDF
 
 	listPerson := app.GetMEPsListHandler(c)
 	for _, person := range listPerson {

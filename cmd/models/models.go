@@ -3,7 +3,16 @@ package models
 import (
 	"encoding/xml"
 
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+)
+
+type ActivityType string
+
+const (
+	EPMeetingPart        ActivityType = "EP_MEETING_PART"
+	EPPlenarySitting     ActivityType = "EP_PLENARY_SITTING"
+	EPPlenaryPartSession ActivityType = "EP_PLENARY_PART_SESSION"
 )
 
 type Person struct {
@@ -35,10 +44,29 @@ type RDF struct {
 
 type Config struct {
 	EuroparlAPIURL string `json:"europarl_api_url"`
+	APIURL         string `json:"api_url"`
 }
 
 type Image struct {
 	gorm.Model
 	XMLName xml.Name `xml:"Image" gorm:"-"`
 	About   string   `xml:"about,attr" gorm:"type:text"`
+}
+
+type App struct {
+	Router *gin.Engine
+	Config Config
+	DB     *gorm.DB
+}
+
+type EPEvents struct {
+	Data []EPEventData `json:"data"`
+}
+
+type EPEventData struct {
+	ID              string `json:"id"`
+	Type            string `json:"type"`
+	ActivityID      string `json:"activity_id"`
+	ActivityLabel   string `json:"activity_label"`
+	HadActivityType string `json:"had_activity_type"`
 }
