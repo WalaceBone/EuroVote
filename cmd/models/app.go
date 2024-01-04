@@ -411,10 +411,27 @@ func (app *App) GetMEPsHandler(c *gin.Context) {
 
 // Returns a list of meetings
 // /meetings
+// year: The year of the meeting
+// offset: The offset of the meetings to return
+// limit: The maximum number of meetings to return
 func (app *App) GetMeetingsHandler(c *gin.Context) {
 	apiUrl := app.Config.EuroparlAPIURL + "/meetings" // Use the config URL
 
-	resp, err := http.Get(apiUrl)
+	// Make an HTTP request
+	// year := c.Query("2020")
+	// offset := c.Query("10")
+	// limit := c.Query("10")
+	newreq, err := http.NewRequest("GET", apiUrl, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	q := newreq.URL.Query()
+	q.Add("year", "2022")
+	q.Add("offset", "0")
+	q.Add("limit", "10")
+	newreq.URL.RawQuery = q.Encode()
+	resp, err := http.DefaultClient.Do(newreq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve data"})
 		return
@@ -422,7 +439,11 @@ func (app *App) GetMeetingsHandler(c *gin.Context) {
 	defer resp.Body.Close()
 
 	// Read and print the response body
+
+	log.Println(resp.Request.URL)
 	body, err := io.ReadAll(resp.Body)
+	log.Println("Response body is:")
+	log.Println(resp.Body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read response body"})
 		return
